@@ -2,14 +2,13 @@
 * @Author: zoucong
 * @Date:   2017-06-16 15:16:42
 * @Last Modified by:   zoucong
-* @Last Modified time: 2017-06-16 17:04:06
+* @Last Modified time: 2017-06-16 18:56:46
 */
 
 'use strict';
-const MongoClient = require('mongodb').MongoClient;
-const dbPath = require('../config/').dbPath;
 
-const connect = MongoClient.connect(dbPath);
+const connect = require('./connect.js');
+const { maxDBSize } = require('../config/');
 
 module.exports = class Collection {
   constructor(name) {
@@ -26,9 +25,20 @@ module.exports = class Collection {
     return await collection.insert(data);
   }
 
-  async find(query) {
+  async insertMany(data) {
     const collection = await this.getCollection();
-    return await collection.find(query).toArray();
+    return await collection.insertMany(data);
+  }
+
+  async count(query) {
+    const collection = await this.getCollection();
+    return await collection.count(query);
+  }
+
+  async find(query, start = 0, size = maxDBSize) {
+    const collection = await this.getCollection();
+    return await collection.find(query).
+      skip(start).limit(size).toArray();
   }
 
   async remove(query) {
