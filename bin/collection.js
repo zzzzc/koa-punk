@@ -2,7 +2,7 @@
 * @Author: zoucong
 * @Date:   2017-06-16 15:16:42
 * @Last Modified by:   zoucong
-* @Last Modified time: 2017-06-16 16:08:33
+* @Last Modified time: 2017-06-16 17:04:06
 */
 
 'use strict';
@@ -21,9 +21,19 @@ module.exports = class Collection {
       (this.collection = (await connect).collection(this.name));
   }
 
+  async insert (data) {
+    const collection = await this.getCollection();
+    return await collection.insert(data);
+  }
+
   async find(query) {
     const collection = await this.getCollection();
     return await collection.find(query).toArray();
+  }
+
+  async remove(query) {
+    const collection = await this.getCollection();
+    return await collection.remove(query);
   }
 
 }
