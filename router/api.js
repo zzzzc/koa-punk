@@ -1,9 +1,9 @@
 /*
-* @Author: zoucong
-* @Date:   2017-06-16 14:37:37
-* @Last Modified by:   zoucong
-* @Last Modified time: 2017-06-16 19:18:36
-*/
+ * @Author: zoucong
+ * @Date:   2017-06-16 14:37:37
+ * @Last Modified by: zoucong
+ * @Last Modified time: 2017-06-23 13:48:41
+ */
 
 'use strict';
 
@@ -60,9 +60,3 @@ apiRouter.post("/:apiName", async function (ctx, next) {
 });
 
 module.exports = apiRouter;
-
-
-
-
-
-

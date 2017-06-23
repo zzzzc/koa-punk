@@ -1,9 +1,9 @@
 /*
-* @Author: zoucong
-* @Date:   2017-06-16 16:31:55
-* @Last Modified by:   zoucong
-* @Last Modified time: 2017-06-16 18:27:52
-*/
+ * @Author: zoucong
+ * @Date:   2017-06-16 16:31:55
+ * @Last Modified by: zoucong
+ * @Last Modified time: 2017-06-23 13:49:02
+ */
 
 'use strict';
 const expect = require ('chai').expect;

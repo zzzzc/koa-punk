@@ -9,7 +9,7 @@
     "test": "./node_modules/.bin/nodemon ./node_modules/.bin/mocha --growl ./test/**/*.test.js"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "koa": "^2.2.0",
     "koa-bodyparser": "^4.2.0",
