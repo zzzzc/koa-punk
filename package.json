@@ -17,6 +17,7 @@
     "mongodb": "^2.2.28"
   },
   "devDependencies": {
+    "axios": "^0.16.2",
     "chai": "^4.0.2",
     "mocha": "^3.4.2",
     "nodemon": "^1.11.0"

@@ -2,7 +2,7 @@
  * @Author: zoucong
  * @Date:   2017-06-16 18:44:10
  * @Last Modified by: zoucong
- * @Last Modified time: 2017-06-23 13:50:42
+ * @Last Modified time: 2017-06-26 15:02:39
  */
 
 'use strict';
@@ -18,5 +18,10 @@ module.exports = {
   async dropCollection(name){
     const db = await connect;
     return await db.dropCollection(name);
+  },
+
+  async listCollections() {
+    const db = await connect;
+    return (await db.listCollections()).toArray();
   }
 };
