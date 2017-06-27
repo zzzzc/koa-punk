@@ -2,7 +2,7 @@
  * @Author: zoucong
  * @Date:   2017-06-16 14:37:37
  * @Last Modified by: zoucong
- * @Last Modified time: 2017-06-26 19:03:52
+ * @Last Modified time: 2017-06-27 15:10:01
  */
 
 'use strict';
@@ -10,9 +10,9 @@
 const Router = require('koa-router');
 const config = require('../config/');
 const utils = require('../bin/utils.js');
-const Collection = require('../bin/collection.js');
-const db = require('../bin/db.js');
+const { db, getCollection } = require('../bin/db');
 const { ObjectID } = require('mongodb');
+
 
 const apiRouter = new Router();
 
@@ -37,10 +37,17 @@ async function queryList(collection, query) {
   };
 }
 
+// show collections
+apiRouter.get("/apilist", async function (ctx, next) {
+  ctx.body = (await db.listCollections())
+    .filter(d => d.type === 'collection')
+    .map(d => d.name);
+});
+
 // list api
 apiRouter.all("/:apiName", async function (ctx, next) {
   const apiName = ctx.params.apiName;
-  const collection = new Collection(apiName);
+  const collection = getCollection(apiName);
 
   switch (ctx.method) {
     case "GET":
@@ -48,14 +55,16 @@ apiRouter.all("/:apiName", async function (ctx, next) {
       break;
 
     case "POST":
-      const items = Array.isArray(ctx.request.body)
-        ? ctx.request.body : [ctx.request.body];
-      ctx.body = await collection.insertMany(items);
+      ctx.body = await collection.insert(ctx.request.body);
       break;
 
     case "DELETE":
-      await collection.drop();
-      ctx.body = 'ok';
+      try {
+        await collection.drop();
+        ctx.body = 'ok';
+      } catch (e) {
+        ctx.status = 404;
+      }
       break;
   }
   next();
@@ -64,16 +73,31 @@ apiRouter.all("/:apiName", async function (ctx, next) {
 // item api
 apiRouter.all("/:apiName/:id", async function (ctx, next) {
   const { apiName, id } = ctx.params;
-  const collection = new Collection(apiName);
-  const _id = new ObjectID(id);
+  const collection = getCollection(apiName);
+  let _id, res;
+
+  try {
+    _id = new ObjectID(id);
+  } catch (e) {
+    ctx.status = 404;
+    return next();
+  }
+
   const query = { _id };
-  let res;
 
   switch (ctx.method) {
     case 'DELETE':
-      await collection.remove(query);
+      await collection.delete(query);
       res = 'ok';
       break;
+
+    // case 'POST': //'post' method same as 'put'
+    case 'PUT':
+    case 'PATCH':
+      const { body } = ctx.request;
+      await (ctx.method === 'PATCH' ?
+        collection.update(query, body) :
+        collection.replace(query, body));
 
     case 'GET':
       const item = await collection.find(query, 0, 1);
